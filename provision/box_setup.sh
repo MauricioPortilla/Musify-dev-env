@@ -24,6 +24,18 @@ install_python() {
     sudo apt install python3.7
 }
 
+install_flask() {
+    echo "Installing Flask"
+    sudo mkdir /vagrant_data/MusifyApp
+    cd /vagrant_data/MusifyApp
+    update_packages
+    sudo apt-get install python3-venv
+    sudo python3 -m venv MusifyVenv
+    source MusifyVenv/bin/activate
+    sudo `which pip` install Flask
+    deactivate
+}
+
 clean_up() {
     echo "Cleaning"
     sudo apt -y autoremove && sudo apt autoclean > /dev/null 2>&1
@@ -33,6 +45,7 @@ setup() {
     update_packages
     install_php
     install_python
+    install_flask
     clean_up
 }
 
