@@ -1,9 +1,15 @@
 from flask import Flask
+from flask import Blueprint
+from flask_restful import Api
+from resources.AccountResource import AccountResource
 
 app = Flask(__name__)
-@app.route('/')
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
 
-def hello_world():
-	return 'Flask en una caja de Vagrant\n'
-if __name__ == '__main__':
-	app.run(host='0.0.0.0')
+@app.route('/')
+def home():
+	return 'Welcome to Musify!'
+
+# Routes
+api.add_resource(AccountResource, "/Account")
