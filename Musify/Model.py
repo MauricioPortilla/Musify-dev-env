@@ -27,9 +27,9 @@ class AccountSchema(marshmallow.Schema):
     account_id = fields.Integer(dump_only=True)
     email = fields.String(required=True, validate=validate.Length(255))
     password = fields.String(required=True)
-    name = fields.String(required=True)
-    last_name = fields.String(required=True)
-    second_last_name = fields.String(required=False)
+    name = fields.String(required=True, validate=validate.Length(50))
+    last_name = fields.String(required=True, validate=validate.Length(50))
+    second_last_name = fields.String(required=False, validate=validate.Length(50))
     creation_date = fields.Date()
 
 class Subscription(database.Model):
@@ -66,8 +66,8 @@ class AccountSong(database.Model):
 class AccountSongSchema(marshmallow.Schema):
     account_song_id = fields.Integer(dump_only=True)
     account_id = fields.Integer(required=True)
-    title = fields.String(required=True)
-    song_location = fields.String(required=True)
+    title = fields.String(required=True, validate=validate.Length(50))
+    song_location = fields.String(required=True, validate=validate.Length(255))
     upload_date = fields.Date()
 
 class Playlist(database.Model):
@@ -84,7 +84,7 @@ class Playlist(database.Model):
 class PlaylistSchema(marshmallow.Schema):
     playlist_id = fields.Integer(dump_only=True)
     account_id = fields.Integer(required=True)
-    name = fields.String(required=True)
+    name = fields.String(required=True, validate=validate.Length(20))
 
 class Album(database.Model):
     __tablename__ = "album"
@@ -102,10 +102,10 @@ class Album(database.Model):
 
 class AlbumSchema(marshmallow.Schema):
     album_id = fields.Integer(dump_only=True)
-    name = fields.String(required=True)
+    name = fields.String(required=True, validate=validate.Length(25))
     launch_year = fields.Integer(required=True)
-    discography = fields.String(required=True)
-    image_location = fields.String(required=True)
+    discography = fields.String(required=True, validate=validate.Length(50))
+    image_location = fields.String(required=True, validate=validate.Length(255))
 
 class Genre(database.Model):
     genre_id = database.Column(database.Integer, primary_key=True)
@@ -116,7 +116,7 @@ class Genre(database.Model):
 
 class GenreSchema(marshmallow.Schema):
     genre_id = fields.Integer(dump_only=True)
-    name = fields.String(required=True)
+    name = fields.String(required=True, validate=validate.Length(15))
 
 class Song(database.Model):
     song_id = database.Column(database.Integer, primary_key=True)
@@ -135,7 +135,7 @@ class SongSchema(marshmallow.Schema):
     song_id = fields.Integer(dump_only=True)
     album_id = fields.Integer(required=True)
     genre_id = fields.Integer(required=True)
-    title = fields.String(required=True)
+    title = fields.String(required=True, validate=validate.Length(30))
 
 class SongRate(database.Model):
     song_rate_id = database.Column(database.Integer, primary_key=True)
@@ -173,9 +173,9 @@ class Artist(database.Model):
 class ArtistSchema(marshmallow.Schema):
     artist_id = fields.Integer(dump_only=True)
     account_id = fields.Integer(required=True)
-    name = fields.String(required=True)
-    last_name = fields.String(required=True)
-    second_last_name = fields.String(required=True)
+    name = fields.String(required=True, validate=validate.Length(50))
+    last_name = fields.String(required=True, validate=validate.Length(50))
+    second_last_name = fields.String(required=False, validate=validate.Length(50))
 
 class PlaylistSong(database.Model):
     playlist_id = database.Column(database.Integer, database.ForeignKey("playlist.playlist_id"), primary_key=True)
