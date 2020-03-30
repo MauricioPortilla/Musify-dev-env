@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_restful import Api
 from flask import request
 from resources.AccountResource import AccountResource
+from resources.PlaylistResource import PlaylistResource
 
 app = Flask(__name__)
 api_bp = Blueprint('api', __name__)
@@ -18,3 +19,4 @@ def test():
 
 # Routes
 api.add_resource(AccountResource, "/Account")
+api.add_resource(PlaylistResource, "/Playlist")

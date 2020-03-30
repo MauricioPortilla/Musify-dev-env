@@ -16,23 +16,23 @@ class AccountResource(Resource):
     def post(self):
         json_data = request.get_json()
         if not json_data:
-            return { 'message': 'No input data provided' }, 400
+            return { "status": "failed", 'message': 'No input data provided' }, 400
 
-        if (json_data["requestType"] == "login"):
+        if (json_data["request_type"] == "login"):
             account = Account.query.filter_by(
                 email=json_data['email'], 
                 password=hashlib.sha512(json_data["password"].encode()).hexdigest()
             ).first()
             if not account:
-                return { 'message': 'Account does not exist' }, 400
+                return { "status": "failed", 'message': 'Account does not exist' }, 400
             return account_schema.dump(account).data, 200
-        elif (json_data["requestType"] == "register"):
+        elif (json_data["request_type"] == "register"):
             data, errors = account_schema.load(json_data)
             if errors:
                 return errors, 422
             account = Account.query.filter_by(name=data['email']).first()
             if account:
-                return { 'message': 'Account already exists' }, 400
+                return { "status": "failed", 'message': 'Account already exists' }, 400
             account = Account(
                 email=data['email'],
                 password=hashlib.sha512(data['password'].encode()).hexdigest(),
@@ -48,7 +48,6 @@ class AccountResource(Resource):
                 artist = Artist(result["account_id"], json_data["artistic_name"])
                 database.session.add(artist)
                 database.session.commit()
-
             return { "status": "success", "data": result }, 201
         else:
             return { "status": "failed"}, 400
