@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from Model import database, Playlist, PlaylistSchema
 from flask import request
-import sys
 import json
 
 playlists_schema = PlaylistSchema(many=True)
