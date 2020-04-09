@@ -52,3 +52,6 @@ doc/
 
 # Box storage for spec
 test/vagrant-spec/boxes/*.box
+
+# Server storage
+/Musify/storage/*
