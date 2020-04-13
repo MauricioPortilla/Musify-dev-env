@@ -13,8 +13,8 @@ def create_app(config_filename):
     from Model import database
     database.init_app(app)
 
-    if not os.path.exists(songsDirectory):
-        os.makedirs(songsDirectory)
+    if not (os.path.isdir(songsDirectory)):
+        os.mkdir(songsDirectory)
 
     return app
 
