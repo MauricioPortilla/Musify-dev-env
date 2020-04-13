@@ -2,15 +2,20 @@ from flask_restful import Resource
 from Model import database, Account, AccountSchema, Artist, ArtistSchema
 from flask import request
 from datetime import date
-import hashlib
+import hashlib, json
 
 accounts_schema = AccountSchema(many=True)
 account_schema = AccountSchema()
 
 class AccountResource(Resource):
     def get(self):
-        accounts = Account.query.all()
-        accounts = accounts_schema.dump(accounts).data
+        data = json.loads(request.args.to_dict()["data"])
+        return data;
+        if not data:
+            accounts = Account.query.all()
+            accounts = accounts_schema.dump(accounts).data
+            return { "status": "success", "data": accounts }, 200
+        accounts = Account.query.filter(data).all()
         return { "status": "success", "data": accounts }, 200
 
     def post(self):
