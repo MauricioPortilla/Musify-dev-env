@@ -7,14 +7,11 @@ import subprocess
 import sys
 
 class SongStreamResource(Resource):
-    def get(self):
-        data = json.loads(request.args.to_dict()["data"])
-        if not data:
-            return { "status": "failed", 'message': 'No input data provided' }, 400
+    def get(self, song_id):
         headers = Headers()
-        def generateData(data, headers):
+        def generateData(song_id, headers):
             songFileCall = subprocess.Popen(
-                "php resources/v1/components/php/find_song.php " + str(data["song_id"]),
+                "php resources/v1/components/php/find_song.php " + str(song_id),
                 shell=True, 
                 stdout=subprocess.PIPE
             )
@@ -27,4 +24,4 @@ class SongStreamResource(Resource):
                     data = songStream.read(1024)
                     totalBytes += 1024
                 headers.add("Content-Range", "bytes */" + str(totalBytes))
-        return Response(generateData(data, headers), mimetype="audio/x-wav", headers=headers)
+        return Response(generateData(song_id, headers), mimetype="audio/x-wav", headers=headers)

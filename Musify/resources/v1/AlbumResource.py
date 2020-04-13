@@ -9,10 +9,8 @@ albumArtists_schema = AlbumArtistSchema(many=True)
 albumArtist_schema = AlbumArtistSchema()
 
 class AlbumResource(Resource):
-    def get(self):
-        data = json.loads(request.args.to_dict()["data"])
-        if not data:
-            return { "status": "failed", 'message': 'No input data provided' }, 400
-        if (data["request_type"] == "albumById"):
-            album = Album.query.filter_by(album_id=data["album_id"]).first()
+    def get(self, album_id=None):
+        if not (album_id is None):
+            album = Album.query.filter_by(album_id=album_id).first()
             return { "status": "success", "data": album_schema.dump(album).data }, 200
+        return { "status": "failed", 'message': 'No input data provided' }, 400

@@ -11,9 +11,6 @@ class PlaylistResource(Resource):
         data = json.loads(request.args.to_dict()["data"])
         if not data:
             return { "status": "failed", 'message': 'No input data provided' }, 400
-        if (data["request_type"] == "accountPlaylists"):
-            playlists = Playlist.query.filter_by(account_id=data["account_id"])
-            return { "status": "success", "data": playlists_schema.dump(playlists).data }, 200
 
     def post(self):
         json_data = request.get_json()
