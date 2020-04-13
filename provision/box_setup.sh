@@ -25,11 +25,12 @@ install_python() {
 
 install_flask() {
     echo "Installing Flask"
-    cd Musify
-    python3 -m venv venv
+    sudo mkdir MusifyVenv
+    cd MusifyVenv
+    sudo cp /home/vagrant/Musify/requirements.txt requirements.txt
+    sudo python3 -m venv venv
     source venv/bin/activate
-    pip install -r requirements.txt
-    #deactivate
+    sudo pip install --no-cache-dir -r requirements.txt
 }
 
 clean_up() {
