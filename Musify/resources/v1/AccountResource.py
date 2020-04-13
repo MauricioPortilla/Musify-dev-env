@@ -10,7 +10,6 @@ account_schema = AccountSchema()
 class AccountResource(Resource):
     def get(self):
         data = json.loads(request.args.to_dict()["data"])
-        return data;
         if not data:
             accounts = Account.query.all()
             accounts = accounts_schema.dump(accounts).data

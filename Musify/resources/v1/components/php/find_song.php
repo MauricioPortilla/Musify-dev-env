@@ -2,7 +2,7 @@
 
 <?php
 
-$songsDirectory = __DIR__ . "/../../../storage/songs";
+$songsDirectory = __DIR__ . "/../../../../storage/songs";
 $songFormats = ["wav", "mp3"];
 $songId = $argv[1];
 
