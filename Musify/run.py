@@ -2,6 +2,8 @@ from flask import Flask
 import os
 
 songsDirectory = "./storage/songs"
+albumImagesDirectory = "./storage/albumImages"
+accountSongsDirectory = "./storage/accountsongs"
 
 def create_app(config_filename):
     app = Flask(__name__)
@@ -13,8 +15,14 @@ def create_app(config_filename):
     from Model import database
     database.init_app(app)
 
-    if not (os.path.exists(songsDirectory)):
+    if (not os.path.exists(songsDirectory)):
         os.mkdir(songsDirectory)
+    
+    if (not os.path.exists(albumImagesDirectory)):
+        os.mkdir(albumImagesDirectory)
+
+    if (not os.path.exists(accountSongsDirectory)):
+        os.mkdir(accountSongsDirectory)
 
     return app
 

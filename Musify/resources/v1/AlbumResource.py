@@ -5,8 +5,6 @@ import json
 
 albums_schema = AlbumSchema(many=True)
 album_schema = AlbumSchema()
-albumArtists_schema = AlbumArtistSchema(many=True)
-albumArtist_schema = AlbumArtistSchema()
 
 class AlbumResource(Resource):
     def get(self, album_id=None):
