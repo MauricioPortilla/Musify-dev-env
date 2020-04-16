@@ -42,7 +42,6 @@ class AccountResource(Resource):
                 password=hashlib.sha512(data['password'].encode()).hexdigest(),
                 name=data['name'],
                 last_name=data['last_name'],
-                second_last_name=data['second_last_name'],
                 creation_date=date.today().strftime("%Y/%m/%d")
             )
             database.session.add(account)

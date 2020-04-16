@@ -4,6 +4,7 @@ import os
 songsDirectory = "./storage/songs"
 albumImagesDirectory = "./storage/albumImages"
 accountSongsDirectory = "./storage/accountsongs"
+ALLOWED_FILE_SONG_EXTENSIONS = ["mp3", "wav"]
 
 def create_app(config_filename):
     app = Flask(__name__)

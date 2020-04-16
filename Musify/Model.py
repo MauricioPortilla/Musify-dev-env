@@ -13,15 +13,13 @@ class Account(database.Model):
     password = database.Column(database.String(255), nullable=False)
     name = database.Column(database.String(50), nullable=False)
     last_name = database.Column(database.String(50), nullable=False)
-    second_last_name = database.Column(database.String(50), nullable=True)
     creation_date = database.Column(database.Date, nullable=False)
 
-    def __init__(self, email, password, name, last_name, second_last_name, creation_date):
+    def __init__(self, email, password, name, last_name, creation_date):
         self.email = email
         self.password = password
         self.name = name
         self.last_name = last_name
-        self.second_last_name = second_last_name
         self.creation_date = creation_date
 
 class AccountSchema(marshmallow.Schema):
@@ -30,7 +28,6 @@ class AccountSchema(marshmallow.Schema):
     password = fields.String(required=True)
     name = fields.String(required=True, validate=validate.Length(max=50))
     last_name = fields.String(required=True, validate=validate.Length(max=50))
-    second_last_name = fields.String(required=False, validate=validate.Length(max=50))
     creation_date = fields.Date()
 
 class Subscription(database.Model):
@@ -60,8 +57,8 @@ class AccountSong(database.Model):
     account_song_id = database.Column(database.Integer, primary_key=True)
     account_id = database.Column(database.Integer, database.ForeignKey("account.account_id"), nullable=False)
     account = database.relationship("Account", backref=database.backref("account_accountsong", lazy="dynamic"))
-    title = database.Column(database.String(50), nullable=False)
-    song_location = database.Column(database.String(255), nullable=False)
+    title = database.Column(database.String(255), nullable=False)
+    song_location = database.Column(database.String(30), nullable=False)
     upload_date = database.Column(database.Date, nullable=False)
 
     def __init__(self, account_id, title, song_location, upload_date):
@@ -73,7 +70,7 @@ class AccountSong(database.Model):
 class AccountSongSchema(marshmallow.Schema):
     account_song_id = fields.Integer(dump_only=True)
     account_id = fields.Integer(required=True)
-    title = fields.String(required=True, validate=validate.Length(max=50))
+    title = fields.String(required=True, validate=validate.Length(max=30))
     song_location = fields.String(required=True, validate=validate.Length(max=255))
     upload_date = fields.Date()
 
@@ -131,18 +128,21 @@ class Song(database.Model):
     album = database.relationship("Album", backref=database.backref("album_song", lazy="dynamic"))
     genre_id = database.Column(database.Integer, database.ForeignKey("genre.genre_id"), nullable=False)
     genre = database.relationship("Genre", backref=database.backref("genre_song", lazy="dynamic"))
-    title = database.Column(database.String(30), nullable=False)
+    title = database.Column(database.String(255), nullable=False)
+    song_location = database.Column(database.String(255), nullable=False)
 
-    def __init__(self, album_id, genre_id, title):
+    def __init__(self, album_id, genre_id, title, song_location):
         self.album_id = album_id
         self.genre_id = genre_id
         self.title = title
+        self.song_location = song_location
 
 class SongSchema(marshmallow.Schema):
     song_id = fields.Integer(dump_only=True)
     album_id = fields.Integer(required=True)
     genre_id = fields.Integer(required=True)
-    title = fields.String(required=True, validate=validate.Length(max=30))
+    title = fields.String(required=True, validate=validate.Length(max=255))
+    song_location = fields.String(required=True, validate=validate.Length(max=255))
 
 class SongRate(database.Model):
     song_rate_id = database.Column(database.Integer, primary_key=True)
