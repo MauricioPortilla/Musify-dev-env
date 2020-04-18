@@ -33,6 +33,12 @@ install_flask() {
     sudo pip install --no-cache-dir -r requirements.txt
 }
 
+install_grpc() {
+    echo "Installing gRPC"
+    sudo python -m pip install grpcio
+    sudo python -m pip install grpcio-tools
+}
+
 clean_up() {
     echo "Cleaning"
     sudo apt -y autoremove && sudo apt autoclean > /dev/null 2>&1
@@ -43,6 +49,7 @@ setup() {
     install_php
     install_python
     install_flask
+    install_grpc
     clean_up
 }
 

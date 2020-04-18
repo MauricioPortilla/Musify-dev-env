@@ -40,4 +40,4 @@ api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/songs/<
 api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/song", methods=["POST"])
 api.add_resource(SongResourceV1, "/v1/song/<int:song_id>")
 api.add_resource(SongSearchResourceV1, "/v1/song/search/<title>")
-api.add_resource(SongStreamResourceV1, "/v1/stream/song/<int:song_id>")
+api.add_resource(SongStreamResourceV1, "/v1/stream/song/<int:song_id>/<quality_type>")

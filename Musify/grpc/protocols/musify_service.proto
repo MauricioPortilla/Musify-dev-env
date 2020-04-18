@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+service MusifyService {
+    rpc upload(stream SongChunk) returns (SongStored) {}
+    rpc download(SongRequest) returns (stream SongChunk) {}
+}
+
+message SongChunk {
+    bytes buffer = 1;
+    string name = 2;
+}
+
+message SongStored {
+    string name = 1;
+    int32 length = 2;
+}
+
+message SongRequest {
+    string name = 1;
+    string quality = 2;
+}

@@ -1,27 +1,23 @@
 from flask_restful import Resource
-from werkzeug.datastructures import Headers
 from flask import request, Response
-from run import songsDirectory
+from run import songsDirectory, MUSIFY_GRPC_SERVER_ADDRESS
+from Model import Song, SongSchema
 import json
 import subprocess
 import sys
+sys.path.insert(1, '/home/vagrant/Musify/grpc/src')
+import musify_client
+
+song_schema = SongSchema()
 
 class SongStreamResource(Resource):
-    def get(self, song_id):
-        headers = Headers()
-        def generateData(song_id, headers):
-            songFileCall = subprocess.Popen(
-                "php resources/v1/components/php/find_song.php " + str(song_id),
-                shell=True, 
-                stdout=subprocess.PIPE
-            )
-            songFile = songFileCall.stdout.read().splitlines()[1].decode("utf-8");
-            totalBytes = 0
-            with open(songsDirectory + "/" + songFile, 'rb') as songStream:
-                data = songStream.read(1024)
-                while data:
-                    yield data
-                    data = songStream.read(1024)
-                    totalBytes += 1024
-                headers.add("Content-Range", "bytes */" + str(totalBytes))
-        return Response(generateData(song_id, headers), mimetype="audio/x-wav", headers=headers)
+    def get(self, song_id, quality_type):
+        song = Song.query.filter_by(song_id=song_id).first()
+        if not song:
+            return { "status": "failure", "message": "This song does not exist." }, 401
+        def generateData(song, quality_type):
+            client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
+            response = client.download(song.song_location, quality_type)
+            for chunk in response:
+                yield chunk.buffer
+        return Response(generateData(song, quality_type), mimetype="audio/mp3")
