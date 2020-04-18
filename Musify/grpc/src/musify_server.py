@@ -45,7 +45,10 @@ class MusifyServer(MusifyServiceGRPC.MusifyServiceServicer):
             os.mkdir("/home/vagrant/Musify/storage")
         if not os.path.exists("/home/vagrant/Musify/storage/songs"):
             os.mkdir("/home/vagrant/Musify/storage/songs")
-            
+            os.mkdir("/home/vagrant/Musify/storage/songs/highquality")
+            os.mkdir("/home/vagrant/Musify/storage/songs/mediumquality")
+            os.mkdir("/home/vagrant/Musify/storage/songs/lowquality")
+
         self.server.add_insecure_port(f'[::]:{port}')
         self.server.start()
 
