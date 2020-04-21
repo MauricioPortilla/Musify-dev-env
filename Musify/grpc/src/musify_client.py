@@ -10,7 +10,7 @@ class MusifyClient:
     def upload(self, filepath, filename):
         chunks_generator = lib.getFileChunks(filepath, filename)
         response = self.stub.upload(chunks_generator)
-        status = "success" if response.length == os.path.getsize(filepath) else "failure"
+        status = "success" if response.length == os.path.getsize(filepath) else "failed"
         print(json.dumps({"status": status, "name": response.name}))
 
     def download(self, songFilename, songQuality):

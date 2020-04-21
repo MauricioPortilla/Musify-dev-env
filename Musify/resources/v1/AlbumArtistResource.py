@@ -1,13 +1,15 @@
 from flask_restful import Resource
 from Model import database, Artist, ArtistSchema, AlbumArtist, AlbumArtistSchema
 from flask import request
+from resources.v1.AuthResource import auth_token
 import json
 
 artists_schema = ArtistSchema(many=True)
 artist_schema = ArtistSchema()
 
 class AlbumArtistResource(Resource):
-    def get(self, album_id):
+    @auth_token
+    def get(self, account, album_id):
         albumArtists = AlbumArtist.query.filter_by(album_id=album_id)
         artists = []
         for artist in albumArtists:

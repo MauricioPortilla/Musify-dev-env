@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, request
 from flask_restful import Api
+from resources.v1.AuthResource import AuthResource as AuthResourceV1
 from resources.v1.AccountResource import AccountResource as AccountResourceV1
 from resources.v1.PlaylistResource import PlaylistResource as PlaylistResourceV1
 from resources.v1.PlaylistSongResource import PlaylistSongResource as PlaylistSongResourceV1
@@ -22,6 +23,7 @@ api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
 # Routes
+api.add_resource(AuthResourceV1, "/v1/auth/<request_type>")
 api.add_resource(AccountResourceV1, "/v1/account")
 api.add_resource(AccountPlaylistResourceV1, "/v1/account/<int:account_id>/playlists")
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsongs", methods=["GET", "POST"], endpoint="accountsongs")

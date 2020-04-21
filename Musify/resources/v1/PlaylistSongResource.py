@@ -1,13 +1,15 @@
 from flask_restful import Resource
 from Model import database, PlaylistSong, PlaylistSongSchema, Song, SongSchema
 from flask import request, Response
+from resources.v1.AuthResource import auth_token
 
 playlist_song_schema = PlaylistSongSchema()
 song_schema = SongSchema()
 songs_schema = SongSchema(many=True)
 
 class PlaylistSongResource(Resource):
-    def get(self, playlist_id, song_id=None):
+    @auth_token
+    def get(self, account, playlist_id, song_id=None):
         if (song_id is None):
             playlistSongs = PlaylistSong.query.filter_by(playlist_id=playlist_id)
             songs = []
@@ -22,7 +24,8 @@ class PlaylistSongResource(Resource):
             song = Song.query.filter_by(song_id=playlistSong.song_id).first()
             return { "status": "success", "data": song_schema.dump(song).data }
             
-    def post(self, playlist_id):
+    @auth_token
+    def post(self, account, playlist_id):
         json_data = request.get_json()
         if (not json_data):
             return { "status": "failed", 'message': 'No input data provided' }, 400

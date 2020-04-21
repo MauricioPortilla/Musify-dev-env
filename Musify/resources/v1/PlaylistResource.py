@@ -1,18 +1,21 @@
 from flask_restful import Resource
 from Model import database, Playlist, PlaylistSchema
 from flask import request
+from resources.v1.AuthResource import auth_token
 import json
 
 playlists_schema = PlaylistSchema(many=True)
 playlist_schema = PlaylistSchema()
 
 class PlaylistResource(Resource):
-    def get(self):
+    @auth_token
+    def get(self, account):
         data = json.loads(request.args.to_dict()["data"])
         if not data:
             return { "status": "failed", 'message': 'No input data provided' }, 400
 
-    def post(self):
+    @auth_token
+    def post(self, account):
         json_data = request.get_json()
         if not json_data:
             return { "status": "failed", 'message': 'No input data provided' }, 400

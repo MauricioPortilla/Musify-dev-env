@@ -4,6 +4,7 @@ from flask import request, Response
 from run import ALLOWED_FILE_SONG_EXTENSIONS, accountSongsDirectory
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from resources.v1.AuthResource import auth_token
 import sys, os, hashlib
 
 accountsong_schema = AccountSongSchema()
@@ -14,11 +15,13 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_FILE_SONG_EXTENSIONS
 
 class AccountAccountSongResource(Resource):
-    def get(self, account_id):
+    @auth_token
+    def get(self, account, account_id):
         accountsongs = AccountSong.query.filter_by(account_id=account_id)
         return { "status": "success", "data": accountsongs_schema.dump(accountsongs).data }, 200
 
-    def post(self, account_id):
+    @auth_token
+    def post(self, account, account_id):
         results = []
         for fileData in request.files:
             file = request.files[fileData]
@@ -38,13 +41,14 @@ class AccountAccountSongResource(Resource):
                 file.save(os.path.join(accountSongsDirectory, newFileName))
                 results.append(result)
         if not results:
-            return { "status": "failure", "message": "No selected files." }, 400
+            return { "status": "failed", "message": "No selected files." }, 400
         return { "status": "success", "data": results }, 201
 
-    def delete(self, account_id, account_song_id):
+    @auth_token
+    def delete(self, account, account_id, account_song_id):
         accountSong = AccountSong.query.filter_by(account_song_id=account_song_id, account_id=account_id).first()
         if not accountSong:
-            return { "status": "failure", "message": "This account song does not exist." }, 401
+            return { "status": "failed", "message": "This account song does not exist." }, 401
         database.session.delete(accountSong)
         database.session.commit()
         os.remove(accountSongsDirectory + "/" + accountSong.song_location)
