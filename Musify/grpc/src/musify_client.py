@@ -14,6 +14,4 @@ class MusifyClient:
         print(json.dumps({"status": status, "name": response.name}))
 
     def download(self, songFilename, songQuality):
-        # response = self.stub.download(MusifyService.SongRequest(name=songFilename, quality=songQuality))
-        # lib.saveChunksToFile(response, destinationPath)
         return self.stub.download(MusifyService.SongRequest(name=songFilename, quality=songQuality))
