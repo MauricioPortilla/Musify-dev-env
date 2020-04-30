@@ -2,6 +2,7 @@ from flask_restful import Resource
 from Model import database, Account, AccountSchema, Artist, ArtistSchema
 from flask import request
 from functools import wraps
+from datetime import date
 import datetime, hashlib, json, jwt, sys
 sys.path.insert(1, '/home/vagrant/Musify/')
 import config
