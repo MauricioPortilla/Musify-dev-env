@@ -8,6 +8,8 @@ from resources.v1.AccountPlaylistResource import AccountPlaylistResource as Acco
 from resources.v1.AccountAccountSongResource import AccountAccountSongResource as AccountAccountSongResourceV1
 from resources.v1.AccountSongStreamResource import AccountSongStreamResource as AccountSongStreamResourceV1
 from resources.v1.SongResource import SongResource as SongResourceV1
+from resources.v1.SongLikeResource import SongLikeResource as SongLikeResourceV1
+from resources.v1.SongDislikeResource import SongDislikeResource as SongDislikeResourceV1
 from resources.v1.SongSearchResource import SongSearchResource as SongSearchResourceV1
 from resources.v1.AlbumResource import AlbumResource as AlbumResourceV1
 from resources.v1.AlbumImageResource import AlbumImageResource as AlbumImageResourceV1
@@ -42,4 +44,6 @@ api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/songs/<
 api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/song", methods=["POST"])
 api.add_resource(SongResourceV1, "/v1/song/<int:song_id>")
 api.add_resource(SongSearchResourceV1, "/v1/song/search/<title>")
+api.add_resource(SongLikeResourceV1, "/v1/song/<int:song_id>/songlike")
+api.add_resource(SongDislikeResourceV1, "/v1/song/<int:song_id>/songdislike")
 api.add_resource(SongStreamResourceV1, "/v1/stream/song/<int:song_id>/<quality_type>")
