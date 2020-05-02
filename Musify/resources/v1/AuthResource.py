@@ -1,9 +1,9 @@
 from flask_restful import Resource
 from Model import database, Account, AccountSchema, Artist, ArtistSchema
-from flask import request
+from flask import request, jsonify
 from functools import wraps
 from datetime import date
-import datetime, hashlib, json, jwt, sys
+import datetime, hashlib, json, jwt, sys, urllib.request
 sys.path.insert(1, '/home/vagrant/Musify/')
 import config
 
@@ -26,11 +26,26 @@ def auth_token(function):
     return decorated
 
 class AuthResource(Resource):
-    def post(self, request_type):
+    def post(self, request_type, login_method=None):
         json_data = request.get_json()
         if not json_data:
             return { "status": "failed", 'message': 'No input data provided' }, 400
         if request_type == "login":
+            if login_method and login_method == "google":
+                google_response = urllib.request.urlopen(
+                    "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
+                ).read()
+                google_response_json = json.loads(google_response.decode("UTF-8"))
+                account = Account.query.filter_by(email=google_response_json["email"]).first()
+                if not account:
+                    return { "status": "failed", 'message': 'Account does not exist' }, 400
+                accessToken = jwt.encode({
+                    "account_id": account.account_id, 
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+                }, config.SECRET_KEY)
+                
+                return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+
             account = Account.query.filter_by(
                 email=json_data["email"], 
                 password=hashlib.sha512(json_data["password"].encode()).hexdigest()
@@ -47,7 +62,7 @@ class AuthResource(Resource):
             data, errors = account_schema.load(json_data)
             if errors:
                 return errors, 422
-            account = Account.query.filter_by(name=data['email']).first()
+            account = Account.query.filter_by(email=data['email']).first()
             if account:
                 return { "status": "failed", 'message': 'Account already exists' }, 400
             account = Account(

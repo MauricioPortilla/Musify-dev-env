@@ -26,6 +26,7 @@ api = Api(api_bp)
 
 # Routes
 api.add_resource(AuthResourceV1, "/v1/auth/<request_type>")
+api.add_resource(AuthResourceV1, "/v1/auth/<request_type>/<login_method>", endpoint="loginAlternatives")
 api.add_resource(AccountResourceV1, "/v1/account")
 api.add_resource(AccountPlaylistResourceV1, "/v1/account/<int:account_id>/playlists")
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsongs", methods=["GET", "POST"], endpoint="accountsongs")
