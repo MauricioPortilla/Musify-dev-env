@@ -15,7 +15,9 @@ from resources.v1.AlbumResource import AlbumResource as AlbumResourceV1
 from resources.v1.AlbumImageResource import AlbumImageResource as AlbumImageResourceV1
 from resources.v1.AlbumArtistResource import AlbumArtistResource as AlbumArtistResourceV1
 from resources.v1.AlbumSongResource import AlbumSongResource as AlbumSongResourceV1
+from resources.v1.AlbumSearchResource import AlbumSearchResource as AlbumSearchResourceV1
 from resources.v1.ArtistResource import ArtistResource as ArtistResourceV1
+from resources.v1.ArtistSearchResource import ArtistSearchResource as ArtistSearchResourceV1
 from resources.v1.ArtistAlbumResource import ArtistAlbumResource as ArtistAlbumResourceV1
 from resources.v1.GenreResource import GenreResource as GenreResourceV1
 from resources.v1.SongStreamResource import SongStreamResource as SongStreamResourceV1
@@ -35,9 +37,11 @@ api.add_resource(AccountSongStreamResourceV1, "/v1/stream/accountsong/<int:accou
 api.add_resource(AlbumResourceV1, "/v1/albums", "/v1/album/<int:album_id>")
 api.add_resource(AlbumArtistResourceV1, "/v1/album/<int:album_id>/artists")
 api.add_resource(AlbumImageResourceV1, "/v1/album/<int:album_id>/image")
+api.add_resource(AlbumSearchResourceV1, "/v1/album/search/<name>")
 api.add_resource(AlbumSongResourceV1, "/v1/album/<int:album_id>/songs")
-api.add_resource(ArtistResourceV1, "/v1/artists", "/v1/artist/<int:artist_id>")
 api.add_resource(ArtistAlbumResourceV1, "/v1/artist/<int:artist_id>/albums")
+api.add_resource(ArtistResourceV1, "/v1/artists", "/v1/artist/<int:artist_id>")
+api.add_resource(ArtistSearchResourceV1, "/v1/artist/search/<artistic_name>")
 api.add_resource(GenreResourceV1, "/v1/genre/<int:genre_id>")
 api.add_resource(PlaylistResourceV1, "/v1/playlist")
 api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/songs", methods=["GET"], endpoint="songs")
