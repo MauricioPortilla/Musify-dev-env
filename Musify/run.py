@@ -1,9 +1,8 @@
 from flask import Flask
 import os
 
-songsDirectory = "./storage/songs"
-albumImagesDirectory = "./storage/albumImages"
-accountSongsDirectory = "./storage/accountsongs"
+ALBUM_IMAGES_DIRECTORY = "./storage/albumImages"
+ACCOUNT_SONGS_DIRECTORY = "./storage/accountsongs"
 ALLOWED_FILE_SONG_EXTENSIONS = ["mp3", "wav"]
 MUSIFY_GRPC_SERVER_ADDRESS = '192.168.1.67:8888'
 
@@ -17,11 +16,11 @@ def create_app(config_filename):
     from Model import database
     database.init_app(app)
 
-    if (not os.path.exists(albumImagesDirectory)):
-        os.makedirs(albumImagesDirectory)
+    if (not os.path.exists(ALBUM_IMAGES_DIRECTORY)):
+        os.makedirs(ALBUM_IMAGES_DIRECTORY)
 
-    if (not os.path.exists(accountSongsDirectory)):
-        os.makedirs(accountSongsDirectory)
+    if (not os.path.exists(ACCOUNT_SONGS_DIRECTORY)):
+        os.makedirs(ACCOUNT_SONGS_DIRECTORY)
 
     return app
 

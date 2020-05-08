@@ -10,4 +10,4 @@ class AlbumSongResource(Resource):
     @auth_token
     def get(self, account, album_id):
         songs = Song.query.filter_by(album_id=album_id)
-        return { "status": "success", "data": songs_schema.dump(songs).data }
+        return { "status": "success", "data": songs_schema.dump(songs).data }, 200

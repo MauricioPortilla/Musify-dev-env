@@ -34,7 +34,7 @@ api.add_resource(AccountPlaylistResourceV1, "/v1/account/<int:account_id>/playli
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsongs", methods=["GET", "POST"], endpoint="accountsongs")
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsong/<int:account_song_id>", methods=["DELETE"], endpoint="accountsong")
 api.add_resource(AccountSongStreamResourceV1, "/v1/stream/accountsong/<int:account_song_id>")
-api.add_resource(AlbumResourceV1, "/v1/albums", "/v1/album/<int:album_id>")
+api.add_resource(AlbumResourceV1, "/v1/album/<int:album_id>")
 api.add_resource(AlbumArtistResourceV1, "/v1/album/<int:album_id>/artists")
 api.add_resource(AlbumImageResourceV1, "/v1/album/<int:album_id>/image")
 api.add_resource(AlbumSearchResourceV1, "/v1/album/search/<name>")

@@ -11,4 +11,6 @@ class SongResource(Resource):
     @auth_token
     def get(self, account, song_id):
         song = Song.query.filter_by(song_id=song_id).first()
-        return { "status": "success", "data": song_schema.dump(song).data }
+        if not song:
+            return { "status": "failed", "message": "This song does not exist." }, 422
+        return { "status": "success", "data": song_schema.dump(song).data }, 200

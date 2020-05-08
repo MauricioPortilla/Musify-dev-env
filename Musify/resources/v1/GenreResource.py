@@ -11,4 +11,6 @@ class GenreResource(Resource):
     @auth_token
     def get(self, account, genre_id):
         genre = Genre.query.filter_by(genre_id=genre_id).first()
+        if not genre:
+            return { "status": "failed", "message": "This genre does not exist." }, 422
         return { "status": "success", "data": genre_schema.dump(genre).data }, 200

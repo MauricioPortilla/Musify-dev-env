@@ -11,4 +11,6 @@ class ArtistResource(Resource):
     @auth_token
     def get(self, account, artist_id):
         artist = Artist.query.filter_by(artist_id=artist_id).first()
+        if not artist:
+            return { "status": "failure", "message": "This artist does not exist." }, 422
         return { "status": "success", "data": artist_schema.dump(artist).data }, 200

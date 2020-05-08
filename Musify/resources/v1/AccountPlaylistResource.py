@@ -10,5 +10,7 @@ playlist_schema = PlaylistSchema()
 class AccountPlaylistResource(Resource):
     @auth_token
     def get(self, account, account_id):
+        if account.account_id != account_id:
+            return { "status": "failed", "message": "Unauthorized." }, 401
         playlists = Playlist.query.filter_by(account_id=account_id)
         return { "status": "success", "data": playlists_schema.dump(playlists).data }, 200

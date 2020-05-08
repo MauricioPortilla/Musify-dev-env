@@ -22,36 +22,39 @@ def auth_token(function):
             account = Account.query.filter_by(account_id=data["account_id"]).first()
         except:
             return { "status": "failed", "message": "Invalid token provided." }, 401
-        return function(account, *args, **kwargs)
+        return function(*args, account, **kwargs)
     return decorated
 
 class AuthResource(Resource):
+    def loginWithGoogle(self, json_data):
+        google_response = urllib.request.urlopen(
+            "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
+        ).read()
+        google_response_json = json.loads(google_response.decode("UTF-8"))
+        account = Account.query.filter_by(email=google_response_json["email"]).first()
+        if not account:
+            return { "status": "failed", 'message': 'Account does not exist' }, 412
+        accessToken = jwt.encode({
+            "account_id": account.account_id, 
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        }, config.SECRET_KEY)
+        
+        return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+
     def post(self, request_type, login_method=None):
         json_data = request.get_json()
         if not json_data:
-            return { "status": "failed", 'message': 'No input data provided' }, 400
+            return { "status": "failed", "message": "No input data provided." }, 400
         if request_type == "login":
             if login_method and login_method == "google":
-                google_response = urllib.request.urlopen(
-                    "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
-                ).read()
-                google_response_json = json.loads(google_response.decode("UTF-8"))
-                account = Account.query.filter_by(email=google_response_json["email"]).first()
-                if not account:
-                    return { "status": "failed", 'message': 'Account does not exist' }, 400
-                accessToken = jwt.encode({
-                    "account_id": account.account_id, 
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-                }, config.SECRET_KEY)
-                
-                return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+                return loginWithGoogle(json_data)
 
             account = Account.query.filter_by(
                 email=json_data["email"], 
                 password=hashlib.sha512(json_data["password"].encode()).hexdigest()
             ).first()
             if not account:
-                return { "status": "failed", 'message': 'Account does not exist' }, 400
+                return { "status": "failed", 'message': 'Account does not exist' }, 422
             accessToken = jwt.encode({
                 "account_id": account.account_id, 
                 "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
@@ -64,7 +67,7 @@ class AuthResource(Resource):
                 return errors, 422
             account = Account.query.filter_by(email=data['email']).first()
             if account:
-                return { "status": "failed", 'message': 'Account already exists' }, 400
+                return { "status": "failed", 'message': 'Account already exists' }, 409
             account = Account(
                 email=data['email'],
                 password=hashlib.sha512(data['password'].encode()).hexdigest(),

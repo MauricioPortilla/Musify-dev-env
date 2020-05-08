@@ -9,8 +9,8 @@ album_schema = AlbumSchema()
 
 class AlbumResource(Resource):
     @auth_token
-    def get(self, account, album_id=None):
-        if not (album_id is None):
-            album = Album.query.filter_by(album_id=album_id).first()
-            return { "status": "success", "data": album_schema.dump(album).data }, 200
-        return { "status": "failed", 'message': 'No input data provided' }, 400
+    def get(self, account, album_id):
+        album = Album.query.filter_by(album_id=album_id).first()
+        if not album:
+            return { "status": "failed", "message": "This album does not exist." }, 422
+        return { "status": "success", "data": album_schema.dump(album).data }, 200

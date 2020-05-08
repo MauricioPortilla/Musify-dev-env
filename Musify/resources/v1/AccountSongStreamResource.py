@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from werkzeug.datastructures import Headers
 from flask import request, Response
-from run import accountSongsDirectory
+from run import ACCOUNT_SONGS_DIRECTORY
 from Model import AccountSong
 from resources.v1.AuthResource import auth_token
 import subprocess
@@ -12,11 +12,13 @@ class AccountSongStreamResource(Resource):
     def get(self, account, account_song_id):
         accountSong = AccountSong.query.filter_by(account_song_id=account_song_id).first()
         if not accountSong:
-            return { "status": "failed", "message": "This account song does not exist." }, 401
+            return { "status": "failed", "message": "This account song does not exist." }, 422
+        if account.account_id != accountSong.account_id:
+            return { "status": "failed", "message": "Unauthorized." }, 401
         headers = Headers()
         def generateData(accountSong, headers):
             totalBytes = 0
-            with open(accountSongsDirectory + "/" + accountSong.song_location, 'rb') as songStream:
+            with open(ACCOUNT_SONGS_DIRECTORY + "/" + accountSong.song_location, 'rb') as songStream:
                 data = songStream.read(1024)
                 while data:
                     yield data
