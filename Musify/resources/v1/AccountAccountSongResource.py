@@ -3,8 +3,9 @@ from Model import database, AccountSong, AccountSongSchema
 from flask import request, Response
 from run import ALLOWED_FILE_SONG_EXTENSIONS, ACCOUNT_SONGS_DIRECTORY
 from werkzeug.utils import secure_filename
-from datetime import datetime
+import datetime
 from resources.v1.AuthResource import auth_token
+from time import strftime, gmtime
 import sys, os, hashlib
 import audio_metadata
 
@@ -33,16 +34,16 @@ class AccountAccountSongResource(Resource):
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename).replace("_", " ")
                 newFileName = hashlib.sha1(
-                    (filename + str(datetime.now().timestamp())).encode()
+                    (filename + str(datetime.datetime.now().timestamp())).encode()
                 ).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
                 file.save(os.path.join(ACCOUNT_SONGS_DIRECTORY, newFileName))
                 audioFileMetadata = audio_metadata.load(ACCOUNT_SONGS_DIRECTORY + "/" + newFileName)
                 newAccountSong = AccountSong(
                     account_id, 
                     filename, 
-                    str(round(audioFileMetadata.streaminfo.duration / 60, 2)).replace(".", ":"),
+                    strftime("%M:%S", gmtime(audioFileMetadata.streaminfo.duration)),
                     newFileName,
-                    datetime.today().strftime("%Y-%m-%d")
+                    datetime.datetime.today().strftime("%Y-%m-%d")
                 )
                 database.session.add(newAccountSong)
                 database.session.commit()
