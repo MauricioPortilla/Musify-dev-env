@@ -4,6 +4,7 @@ from resources.v1.AuthResource import AuthResource as AuthResourceV1
 from resources.v1.AccountResource import AccountResource as AccountResourceV1
 from resources.v1.PlaylistResource import PlaylistResource as PlaylistResourceV1
 from resources.v1.PlaylistSongResource import PlaylistSongResource as PlaylistSongResourceV1
+from resources.v1.AccountArtistResource import AccountArtistResource as AccountArtistResourceV1
 from resources.v1.AccountPlaylistResource import AccountPlaylistResource as AccountPlaylistResourceV1
 from resources.v1.AccountAccountSongResource import AccountAccountSongResource as AccountAccountSongResourceV1
 from resources.v1.AccountSongStreamResource import AccountSongStreamResource as AccountSongStreamResourceV1
@@ -30,6 +31,7 @@ api = Api(api_bp)
 api.add_resource(AuthResourceV1, "/v1/auth/<request_type>")
 api.add_resource(AuthResourceV1, "/v1/auth/<request_type>/<login_method>", endpoint="loginAlternatives")
 api.add_resource(AccountResourceV1, "/v1/account")
+api.add_resource(AccountArtistResourceV1, "/v1/account/<int:account_id>/artist")
 api.add_resource(AccountPlaylistResourceV1, "/v1/account/<int:account_id>/playlists")
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsongs", methods=["GET", "POST"], endpoint="accountsongs")
 api.add_resource(AccountAccountSongResourceV1, "/v1/account/<int:account_id>/accountsong/<int:account_song_id>", methods=["DELETE"], endpoint="accountsong")
