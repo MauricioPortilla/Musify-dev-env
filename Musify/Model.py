@@ -102,7 +102,8 @@ class Album(database.Model):
     discography = database.Column(database.String(50), nullable=False)
     image_location = database.Column(database.String(255), nullable=False)
 
-    def __init__(self, name, launch_year, discography, image_location):
+    def __init__(self, type, name, launch_year, discography, image_location):
+        self.type = type
         self.name = name
         self.launch_year = launch_year
         self.discography = discography
@@ -236,7 +237,7 @@ class SongArtist(database.Model):
         self.song_id = song_id
         self.artist_id = artist_id
 
-class AlbumArtistSchema(marshmallow.Schema):
+class SongArtistSchema(marshmallow.Schema):
     song_id = fields.Integer(required=True)
     artist_id = fields.Integer(required=True)
 
