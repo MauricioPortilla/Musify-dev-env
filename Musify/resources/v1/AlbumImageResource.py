@@ -20,7 +20,7 @@ class AlbumImageResource(Resource):
     @auth_token
     def get(self, account, album_id):
         album = Album.query.filter_by(album_id=album_id).first()
-        fullpath = os.getcwd() + ALBUM_IMAGES_DIRECTORY + "/" + album.image_location
+        fullpath = os.path.join(ALBUM_IMAGES_DIRECTORY, album.image_location)
         resp = make_response(open(fullpath, 'rb').read())
         resp.content_type = "image/png"
         return resp
