@@ -22,6 +22,7 @@ from resources.v1.ArtistResource import ArtistResource as ArtistResourceV1
 from resources.v1.ArtistSearchResource import ArtistSearchResource as ArtistSearchResourceV1
 from resources.v1.ArtistAlbumResource import ArtistAlbumResource as ArtistAlbumResourceV1
 from resources.v1.GenreResource import GenreResource as GenreResourceV1
+from resources.v1.GenreSongResource import GenreSongResource as GenreSongResourceV1
 from resources.v1.SongStreamResource import SongStreamResource as SongStreamResourceV1
 
 app = Flask(__name__)
@@ -49,6 +50,7 @@ api.add_resource(ArtistAlbumResourceV1, "/v1/artist/<int:artist_id>/albums")
 api.add_resource(ArtistResourceV1, "/v1/artists", "/v1/artist/<int:artist_id>")
 api.add_resource(ArtistSearchResourceV1, "/v1/artist/search/<artistic_name>")
 api.add_resource(GenreResourceV1, "/v1/genres", "/v1/genre/<int:genre_id>")
+api.add_resource(GenreSongResourceV1, "/v1/genre/<int:genre_id>/songs")
 api.add_resource(PlaylistResourceV1, "/v1/playlist")
 api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/songs", methods=["GET"], endpoint="songs")
 api.add_resource(PlaylistSongResourceV1, "/v1/playlist/<int:playlist_id>/songs/<int:song_id>", methods=["GET"], endpoint="song")
