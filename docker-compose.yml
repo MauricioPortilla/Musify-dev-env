@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+    musify-dev-env:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        expose:
+            - "5000"
+        ports:
+            - "0.0.0.0:5000:5000"
+        volumes:
+            - ./Musify:/Musify/Musify
+        network_mode: musify_network # Requiere ejecutarse docker network create --driver bridge musify_network

@@ -1,15 +1,12 @@
 from flask_restful import Resource
 from Model import database, Song, SongSchema
-from flask import request, Response
-from run import ALLOWED_FILE_SONG_EXTENSIONS, SONGS_DIRECTORY, MUSIFY_GRPC_SERVER_ADDRESS
+from flask import request
+from run import APP_ROOT, ALLOWED_FILE_SONG_EXTENSIONS, SONGS_DIRECTORY, MUSIFY_GRPC_SERVER_ADDRESS
 from werkzeug.utils import secure_filename
-import datetime
 from resources.v1.AuthResource import auth_token
 from time import strftime, gmtime
-import sys, os, hashlib
-import audio_metadata
-import json
-sys.path.insert(1, '/home/vagrant/Musify/grpc/src')
+import datetime, sys, os, hashlib, audio_metadata, json
+sys.path.insert(1, APP_ROOT + '/grpc/src')
 import musify_client
 
 songs_schema = SongSchema(many=True)
@@ -39,7 +36,13 @@ class AlbumSongResource(Resource):
                 audioFileMetadata = audio_metadata.load(SONGS_DIRECTORY + "/" + newFileName)
                 client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
                 response_song = json.loads(client.upload(SONGS_DIRECTORY + "/" + newFileName, newFileName))
-                response = json.loads(json.dumps({"name": response_song["name"], "duration": strftime("%M:%S", gmtime(audioFileMetadata.streaminfo.duration))}))
+                print(">> RECEIVED: " + str(response_song), file=sys.stderr)
+                response = json.loads(
+                    json.dumps({
+                        "name": response_song["name"], 
+                        "duration": strftime("%M:%S", gmtime(audioFileMetadata.streaminfo.duration))
+                    })
+                )
                 results.append(response);
                 os.remove(SONGS_DIRECTORY + "/" + newFileName)
         if not results:

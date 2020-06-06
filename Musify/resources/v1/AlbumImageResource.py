@@ -36,8 +36,8 @@ class AlbumImageResource(Resource):
     				(filename + str(datetime.datetime.now().timestamp())).encode()
     			).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
     			file.save(os.path.join(ALBUM_IMAGES_DIRECTORY, newFileName))
-    			response = json.loads(json.dumps({"name": newFileName}))
+    			response = json.loads(json.dumps({"image_location": newFileName}))
     			results.append(response);
     	if not results:
-    		return { "status": "failes", "message": "No selected files." }, 400
+    		return { "status": "failed", "message": "No selected files." }, 400
     	return { "status": "success", "data": results }, 201
