@@ -31,7 +31,7 @@ api = Api(api_bp)
 
 # Routes
 api.add_resource(AuthResourceV1, "/v1/auth/<request_type>")
-api.add_resource(AuthResourceV1, "/v1/auth/<request_type>/<login_method>", endpoint="loginAlternatives")
+api.add_resource(AuthResourceV1, "/v1/auth/<request_type>/<method>", endpoint="authAlternatives")
 api.add_resource(AccountResourceV1, "/v1/account")
 api.add_resource(AccountArtistResourceV1, "/v1/account/<int:account_id>/artist")
 api.add_resource(AccountPlaylistResourceV1, "/v1/account/<int:account_id>/playlists")

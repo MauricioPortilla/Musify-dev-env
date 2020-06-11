@@ -40,14 +40,46 @@ class AuthResource(Resource):
         }, config.SECRET_KEY)
         
         return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+    
+    def registerWithGoogle(self, json_data):
+        google_response = urllib.request.urlopen(
+            "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
+        ).read()
+        google_response_json = json.loads(google_response.decode("UTF-8"))
+        google_profile_response_json = json.loads(urllib.request.urlopen(
+            "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + json_data["access_token"]
+        ).read().decode('utf-8').replace('\n', ''))
+        print(google_profile_response_json, file=sys.stderr)
+        account = Account.query.filter_by(email=google_response_json['email']).first()
+        if account:
+            return { "status": "failed", 'message': 'Account already exists' }, 409
+        if (json_data["is_artist"]):
+            artist = Artist.query.filter_by(artistic_name=json_data["artistic_name"]).first()
+            if artist:
+                return { "status": "failed", 'message': 'Artist already exists' }, 409
+        account = Account(
+            email=google_response_json['email'],
+            password=hashlib.sha512("googleaccountpass_OXI8SV7E".encode()).hexdigest(),
+            name=google_profile_response_json['given_name'],
+            last_name=google_profile_response_json['family_name'],
+            creation_date=date.today().strftime("%Y/%m/%d")
+        )
+        database.session.add(account)
+        database.session.commit()
+        result = account_schema.dump(account).data
+        if (json_data["is_artist"]):
+            artist = Artist(result["account_id"], json_data["artistic_name"])
+            database.session.add(artist)
+            database.session.commit()
+        return { "status": "success", "data": result }, 201
 
-    def post(self, request_type, login_method=None):
+    def post(self, request_type, method=None):
         json_data = request.get_json()
         if not json_data:
             return { "status": "failed", "message": "No input data provided." }, 400
         if request_type == "login":
-            if login_method and login_method == "google":
-                return loginWithGoogle(json_data)
+            if method and method == "google":
+                return self.loginWithGoogle(json_data)
 
             account = Account.query.filter_by(
                 email=json_data["email"], 
@@ -62,12 +94,18 @@ class AuthResource(Resource):
             
             return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
         elif request_type == "register":
+            if method and method == "google":
+                return self.registerWithGoogle(json_data)
             data, errors = account_schema.load(json_data)
             if errors:
                 return errors, 422
             account = Account.query.filter_by(email=data['email']).first()
             if account:
                 return { "status": "failed", 'message': 'Account already exists' }, 409
+            if (json_data["is_artist"]):
+                artist = Artist.query.filter_by(artistic_name=json_data["artistic_name"]).first()
+                if artist:
+                    return { "status": "failed", 'message': 'Artist already exists' }, 409
             account = Account(
                 email=data['email'],
                 password=hashlib.sha512(data['password'].encode()).hexdigest(),
