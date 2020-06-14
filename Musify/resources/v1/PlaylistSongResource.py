@@ -47,3 +47,15 @@ class PlaylistSongResource(Resource):
         database.session.commit()
         result = playlist_song_schema.dump(playlistSong).data
         return { "status": "success", "data": result }, 201
+
+    @auth_token
+    def delete(self, account, playlist_id, song_id):
+        playlist = Playlist.query.filter_by(playlist_id=playlist_id).first()
+        if not playlist:
+            return { "status": "failed", "message": "This playlist does not exist." }, 422
+        if account.account_id != playlist.account_id:
+            return { "status": "failed", "message": "Unauthorized." }, 401
+        song = PlaylistSong.query.filter_by(playlist_id=playlist_id, song_id=song_id).first()
+        database.session.delete(song)
+        database.session.commit()
+        return { "status": "success", "message": "Song deleted from playlist." }, 200

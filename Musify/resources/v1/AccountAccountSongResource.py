@@ -63,4 +63,4 @@ class AccountAccountSongResource(Resource):
         database.session.delete(accountSong)
         database.session.commit()
         os.remove(ACCOUNT_SONGS_DIRECTORY + "/" + accountSong.song_location)
-        return { "status": "success", "message": "Account song deleted." }, 204
+        return { "status": "success", "message": "Account song deleted." }, 200

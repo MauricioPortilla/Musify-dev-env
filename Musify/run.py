@@ -7,7 +7,7 @@ SONGS_DIRECTORY = "./storage/songs"
 ACCOUNT_SONGS_DIRECTORY = "./storage/accountsongs"
 ALLOWED_FILE_SONG_EXTENSIONS = ["mp3", "wav"]
 ALLOWED_FILE_IMAGE_EXTENSIONS = ["png"]
-MUSIFY_GRPC_SERVER_ADDRESS = '172.18.0.2:8888'
+MUSIFY_GRPC_SERVER_ADDRESS = '172.250.6.3:8888'
 
 def create_app(config_filename):
     app = Flask(__name__)

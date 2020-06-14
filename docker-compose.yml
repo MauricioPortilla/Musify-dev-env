@@ -11,4 +11,10 @@ services:
             - "0.0.0.0:5000:5000"
         volumes:
             - ./Musify:/Musify/Musify
-        network_mode: musify_network # Requiere ejecutarse docker network create --driver bridge musify_network
+        networks:
+            musify_network: # Requiere ejecutarse docker network create --driver bridge --subnet 172.250.6.0/24 musify_network
+                ipv4_address: 172.250.6.2
+
+networks:
+    musify_network:
+        external: true
