@@ -1,20 +1,44 @@
+/// Musify gRPC Protocol Buffer file.
+/// Created by:
+///     > Cruz Portilla Mauricio
+///     > Romero Peña Arturo Iván
+
 syntax = "proto3";
 
+/**
+ * Service to manage Musify songs.
+ */
 service MusifyService {
+    /**
+     * Uploads a song, sending a collection of chunks by stream.
+     */
     rpc upload(stream SongChunk) returns (SongStored) {}
+    /**
+     * Downloads a song. Returns a collection of chunks.
+     */
     rpc download(SongRequest) returns (stream SongChunk) {}
 }
 
+/**
+ * Represents a collection of bytes of a song.
+ */
 message SongChunk {
     bytes buffer = 1;
     string name = 2;
 }
 
+/**
+ * Represents a song stored in server.
+ */
 message SongStored {
     string name = 1;
     int32 length = 2;
 }
 
+/**
+ * Represents a song request. Used to download a specific song
+ * with a specific sound quality.
+ */
 message SongRequest {
     string name = 1;
     string quality = 2;

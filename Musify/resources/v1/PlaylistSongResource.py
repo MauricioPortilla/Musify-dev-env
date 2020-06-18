@@ -20,14 +20,14 @@ class PlaylistSongResource(Resource):
             playlistSongs = PlaylistSong.query.filter_by(playlist_id=playlist_id)
             songs = []
             for playlistSong in playlistSongs:
-                song = Song.query.filter_by(song_id=playlistSong.song_id).first()
+                song = Song.query.filter_by(song_id=playlistSong.song_id, status="ready").first()
                 songs.append(song)
             return { "status": "success", "data": songs_schema.dump(songs).data }
         else:
             playlistSong = PlaylistSong.query.filter_by(playlist_id=playlist_id, song_id=song_id).first()
             if (not playlistSong):
                 return { "status": "failed", "message": "Playlist does not have this song." }, 422
-            song = Song.query.filter_by(song_id=playlistSong.song_id).first()
+            song = Song.query.filter_by(song_id=playlistSong.song_id, status="ready").first()
             return { "status": "success", "data": song_schema.dump(song).data }
             
     @auth_token

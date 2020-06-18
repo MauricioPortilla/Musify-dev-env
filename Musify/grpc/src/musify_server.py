@@ -1,8 +1,5 @@
 from concurrent import futures
-# import sys
-# from ..definitions import APP_ROOT
-# APP_ROOT = os.path.dirname(os.path.abspath(__file__)) + "/../.."
-import grpc, time, lib, os, hashlib, datetime, random, subprocess, threading, sys
+import grpc, time, lib, os, hashlib, datetime, random, subprocess, threading, sys, uuid
 import musify_service_pb2 as MusifyService, musify_service_pb2_grpc as MusifyServiceGRPC
 from musify_service_server import APP_ROOT
 
@@ -17,7 +14,8 @@ class MusifyServer(MusifyServiceGRPC.MusifyServiceServicer):
                     "lowquality": APP_ROOT + "/storage/songs/lowquality"
                 };
 
-            def convertSongThread(self, hashedName):
+            def convertSong(self, hashedName):
+                print("> Converting " + hashedName + "...")
                 result = subprocess.Popen(
                     "java -cp " + APP_ROOT + "/..:" + APP_ROOT + "/components/jave-1.0.2.jar:" + APP_ROOT + "/components Musify.components.SongQualityMain " + 
                         self.songsLocations["highquality"] + "/" + hashedName,
@@ -27,13 +25,14 @@ class MusifyServer(MusifyServiceGRPC.MusifyServiceServicer):
                 message = result.stdout.read().decode("utf-8")
                 if message:
                     print(message)
+                return message
             
             def upload(self, request_iterator, context):
                 hashedName = hashlib.sha1(
-                    (str(random.randint(1, 10000)) + str(datetime.datetime.now().timestamp())).encode()
-                ).hexdigest() + ".mp3"
+                    (str(uuid.uuid4()) + str(datetime.datetime.now().timestamp())).encode()
+                ).hexdigest() + ".bin"
                 lib.saveChunksToFile(request_iterator, self.songsLocations["highquality"] + "/" + hashedName)
-                threading.Thread(target=self.convertSongThread, args=(hashedName,)).start()
+                result = self.convertSong(hashedName)
                 return MusifyService.SongStored(name=hashedName, length=os.path.getsize(self.songsLocations["highquality"] + "/" + hashedName))
 
             def download(self, request, context):

@@ -17,6 +17,8 @@ class SongStreamResource(Resource):
         song = Song.query.filter_by(song_id=song_id).first()
         if not song:
             return { "status": "failed", "message": "This song does not exist." }, 422
+        if song.status != "ready":
+            return { "status": "failed", "message": "This song is not ready yet." }, 401
         def generateData(song, quality_type):
             client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
             response = client.download(song.song_location, quality_type)

@@ -31,15 +31,14 @@ class AlbumResource(Resource):
         for artist in json_data["artists_id"]:
             album_artist = AlbumArtist(result_album["album_id"], artist["artist_id"])
             database.session.add(album_artist)
-            database.session.commit()
         for new_song in json_data["new_songs"]:
             song = Song(album_id=result_album["album_id"], genre_id=new_song["genre_id"], title=new_song["title"], 
-                duration=new_song["duration"], song_location=new_song["song_location"], status="Available")
+                duration=new_song["duration"], song_location=new_song["song_location"], status="pending")
             database.session.add(song)
             database.session.commit()
             result_song = song_schema.dump(song).data
             for artist in new_song["artists_id"]:
                 song_artist = SongArtist(result_song["song_id"], artist["artist_id"])
                 database.session.add(song_artist)
-                database.session.commit()
+            database.session.commit()
         return { "status": "success", "data": result_album }, 201

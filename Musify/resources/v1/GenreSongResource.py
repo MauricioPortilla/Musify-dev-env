@@ -9,5 +9,5 @@ song_schema = SongSchema()
 class GenreSongResource(Resource):
     @auth_token
     def get(self, account, genre_id):
-        songs = Song.query.filter_by(genre_id=genre_id)
+        songs = Song.query.filter_by(genre_id=genre_id, status="ready")
         return { "status": "success", "data": songs_schema.dump(songs).data }, 200
