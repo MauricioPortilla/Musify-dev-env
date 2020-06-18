@@ -162,7 +162,7 @@ class SongLike(database.Model):
     song_id = database.Column(database.Integer, database.ForeignKey("song.song_id"), nullable=False, primary_key=True)
     song = database.relationship("Song", backref=database.backref("song_songlike", lazy="dynamic"))
 
-    def __init__(self, account_id, song_id, rate):
+    def __init__(self, account_id, song_id):
         self.account_id = account_id
         self.song_id = song_id
 
@@ -176,7 +176,7 @@ class SongDislike(database.Model):
     song_id = database.Column(database.Integer, database.ForeignKey("song.song_id"), nullable=False, primary_key=True)
     song = database.relationship("Song", backref=database.backref("song_songdislike", lazy="dynamic"))
 
-    def __init__(self, account_id, song_id, rate):
+    def __init__(self, account_id, song_id):
         self.account_id = account_id
         self.song_id = song_id
 
