@@ -18,11 +18,19 @@ def allowed_file(filename):
 
 class AccountAccountSongResource(Resource):
     @auth_token
-    def get(self, account, account_id):
-        if account.account_id != account_id:
-            return { "status": "failed", "message": "Unauthorized." }, 401
-        accountsongs = AccountSong.query.filter_by(account_id=account_id)
-        return { "status": "success", "data": accountsongs_schema.dump(accountsongs).data }, 200
+    def get(self, account, account_id, account_song_id=None):
+        if account_song_id is None:
+            if account.account_id != account_id:
+                return { "status": "failed", "message": "Unauthorized." }, 401
+            accountsongs = AccountSong.query.filter_by(account_id=account_id)
+            return { "status": "success", "data": accountsongs_schema.dump(accountsongs).data }, 200
+        else:
+            if account.account_id != account_id:
+                return { "status": "failed", "message": "Unauthorized." }, 401
+            accountsong = AccountSong.query.filter_by(account_song_id=account_song_id, account_id=account_id).first()
+            if not accountsong:
+                return { "status": "failed", "message": "This account song does not exist." }, 422
+            return { "status": "success", "data": accountsong_schema.dump(accountsong).data }, 200
 
     @auth_token
     def post(self, account, account_id):
