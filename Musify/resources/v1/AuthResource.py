@@ -49,7 +49,6 @@ class AuthResource(Resource):
         google_profile_response_json = json.loads(urllib.request.urlopen(
             "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + json_data["access_token"]
         ).read().decode('utf-8').replace('\n', ''))
-        print(google_profile_response_json, file=sys.stderr)
         account = Account.query.filter_by(email=google_response_json['email']).first()
         if account:
             return { "status": "failed", 'message': 'Account already exists' }, 409
@@ -65,11 +64,12 @@ class AuthResource(Resource):
             creation_date=date.today().strftime("%Y/%m/%d")
         )
         database.session.add(account)
+        database.session.commit()
         result = account_schema.dump(account).data
         if (json_data["is_artist"]):
             artist = Artist(result["account_id"], json_data["artistic_name"])
             database.session.add(artist)
-        database.session.commit()
+            database.session.commit()
         return { "status": "success", "data": result }, 201
 
     def post(self, request_type, method=None):
@@ -113,11 +113,12 @@ class AuthResource(Resource):
                 creation_date=date.today().strftime("%Y/%m/%d")
             )
             database.session.add(account)
+            database.session.commit()
             result = account_schema.dump(account).data
             if (json_data["is_artist"]):
                 artist = Artist(result["account_id"], json_data["artistic_name"])
                 database.session.add(artist)
-            database.session.commit()
+                database.session.commit()
             return { "status": "success", "data": result }, 201
         else:
             return { "status": "failed", "message": "No valid request type provided." }, 400
