@@ -24,6 +24,7 @@ from resources.v1.ArtistAlbumResource import ArtistAlbumResource as ArtistAlbumR
 from resources.v1.GenreResource import GenreResource as GenreResourceV1
 from resources.v1.GenreSongResource import GenreSongResource as GenreSongResourceV1
 from resources.v1.SongStreamResource import SongStreamResource as SongStreamResourceV1
+from resources.v1.SubscriptionResource import SubscriptionResource as SubscriptionResourceV1
 
 app = Flask(__name__)
 api_bp = Blueprint('api', __name__)
@@ -62,3 +63,4 @@ api.add_resource(SongSearchResourceV1, "/v1/song/search/<title>")
 api.add_resource(SongLikeResourceV1, "/v1/song/<int:song_id>/songlike")
 api.add_resource(SongDislikeResourceV1, "/v1/song/<int:song_id>/songdislike")
 api.add_resource(SongStreamResourceV1, "/v1/stream/song/<int:song_id>/<quality_type>")
+api.add_resource(SubscriptionResourceV1, "/v1/subscription")

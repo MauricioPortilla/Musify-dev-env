@@ -36,14 +36,14 @@ class Subscription(database.Model):
     account_id = database.Column(database.Integer, database.ForeignKey("account.account_id"), nullable=False)
     account = database.relationship("Account", backref=database.backref("account_subscription", lazy="dynamic"))
     cost = database.Column(database.Float, nullable=False)
-    startDate = database.Column(database.Date, nullable=False)
-    endDate = database.Column(database.Date, nullable=False)
+    start_date = database.Column(database.Date, nullable=False)
+    end_date = database.Column(database.Date, nullable=False)
 
-    def __init__(self, account_id, cost, startDate, endDate):
-        self.accountId = account_id
+    def __init__(self, account_id, cost, start_date, end_date):
+        self.account_id = account_id
         self.cost = cost
-        self.startDate = startDate
-        self.endDate = endDate
+        self.start_date = start_date
+        self.end_date = end_date
 
 class SubscriptionSchema(marshmallow.Schema):
     subscription_id = fields.Integer(dump_only=True)
