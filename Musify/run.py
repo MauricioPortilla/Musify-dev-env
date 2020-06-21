@@ -1,14 +1,6 @@
 from flask import Flask
+from config import ALBUM_IMAGES_DIRECTORY, SONGS_DIRECTORY, ACCOUNT_SONGS_DIRECTORY
 import os
-
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-ALBUM_IMAGES_DIRECTORY = "./storage/albumImages"
-SONGS_DIRECTORY = "./storage/songs"
-ACCOUNT_SONGS_DIRECTORY = "./storage/accountsongs"
-ALLOWED_FILE_SONG_EXTENSIONS = ["mp3", "wav"]
-ALLOWED_FILE_IMAGE_EXTENSIONS = ["png"]
-MUSIFY_GRPC_SERVER_ADDRESS = '172.250.6.3:8888'
-SUBSCRIPTION_COST = 100
 
 def create_app(config_filename):
     app = Flask(__name__)

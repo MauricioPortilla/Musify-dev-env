@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, Response
-from run import MUSIFY_GRPC_SERVER_ADDRESS
+from config import MUSIFY_GRPC_SERVER_ADDRESS
 from Model import Song, SongSchema
 from resources.v1.AuthResource import auth_token
 import json

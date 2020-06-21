@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from werkzeug.datastructures import Headers
 from flask import request, Response
-from run import ACCOUNT_SONGS_DIRECTORY
+from config import ACCOUNT_SONGS_DIRECTORY
 from Model import AccountSong
 from resources.v1.AuthResource import auth_token
 import subprocess

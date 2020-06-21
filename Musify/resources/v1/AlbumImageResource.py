@@ -2,7 +2,7 @@ from flask import make_response
 from flask_restful import Resource
 from Model import database, Album, AlbumSchema
 from flask import request, Response
-from run import ALBUM_IMAGES_DIRECTORY, ALLOWED_FILE_IMAGE_EXTENSIONS
+from config import ALBUM_IMAGES_DIRECTORY, ALLOWED_FILE_IMAGE_EXTENSIONS
 from werkzeug.utils import secure_filename
 import datetime
 from resources.v1.AuthResource import auth_token

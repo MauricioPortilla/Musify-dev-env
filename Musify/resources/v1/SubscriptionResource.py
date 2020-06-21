@@ -2,8 +2,8 @@ from flask_restful import Resource
 from Model import database, Subscription, SubscriptionSchema
 from flask import request, Response
 from resources.v1.AuthResource import auth_token
+from config import SUBSCRIPTION_COST
 import datetime
-from run import SUBSCRIPTION_COST
 
 subscription_schema = SubscriptionSchema()
 

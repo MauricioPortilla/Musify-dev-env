@@ -1,8 +1,7 @@
 from flask_restful import Resource
 from Model import database, Song, SongSchema
 from flask import request
-from run import APP_ROOT, ALLOWED_FILE_SONG_EXTENSIONS, SONGS_DIRECTORY, MUSIFY_GRPC_SERVER_ADDRESS
-from config import SQLALCHEMY_DATABASE_URI
+from config import APP_ROOT, ALLOWED_FILE_SONG_EXTENSIONS, SONGS_DIRECTORY, MUSIFY_GRPC_SERVER_ADDRESS, SQLALCHEMY_DATABASE_URI
 from werkzeug.utils import secure_filename
 from resources.v1.AuthResource import auth_token
 from time import strftime, gmtime

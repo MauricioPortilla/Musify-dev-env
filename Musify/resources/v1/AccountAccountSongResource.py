@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from Model import database, AccountSong, AccountSongSchema
 from flask import request, Response
-from run import ALLOWED_FILE_SONG_EXTENSIONS, ACCOUNT_SONGS_DIRECTORY
+from config import ALLOWED_FILE_SONG_EXTENSIONS, ACCOUNT_SONGS_DIRECTORY
 from werkzeug.utils import secure_filename
 import datetime
 from resources.v1.AuthResource import auth_token
