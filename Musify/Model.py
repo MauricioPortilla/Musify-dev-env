@@ -49,8 +49,8 @@ class SubscriptionSchema(marshmallow.Schema):
     subscription_id = fields.Integer(dump_only=True)
     account_id = fields.Integer(required=True)
     cost = fields.Float(required=True)
-    startDate = fields.Date()
-    endDate = fields.Date()
+    start_date = fields.Date()
+    end_date = fields.Date()
 
 class AccountSong(database.Model):
     __tablename__ = "account_song"
