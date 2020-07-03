@@ -10,7 +10,7 @@ genre_schema = GenreSchema()
 class GenreResource(Resource):
     @auth_token
     def get(self, account, genre_id=None):
-    	if (genre_id is None):
+    	if genre_id is None:
     		genres = Genre.query.all()
     		return { "status": "success", "data": genres_schema.dump(genres).data }, 200
     	else:

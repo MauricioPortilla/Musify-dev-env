@@ -28,39 +28,37 @@ class AlbumSongResource(Resource):
     @auth_token
     def post(self, account):
         results = []
-        for fileData in request.files:
-            file = request.files[fileData]
+        for file_data in request.files:
+            file = request.files[file_data]
             if file and allowed_file(file.filename):
-                storedSong = self.storeSongFile(file)
-                threading.Thread(target=self.uploadSongThread, args=(storedSong["name"],)).start()
-                results.append(storedSong);
+                stored_song = self.store_song_file(file)
+                threading.Thread(target=self.upload_song_thread, args=(stored_song["name"],)).start()
+                results.append(stored_song);
         if not results:
             return { "status": "failed", "message": "No selected files." }, 400
         return { "status": "success", "data": results }, 201
 
-    def storeSongFile(self, file):
+    def store_song_file(self, file):
         filename = secure_filename(file.filename).replace("_", " ")
-        newFileName = hashlib.sha1(
-            (filename + str(datetime.datetime.now().timestamp())).encode()
-        ).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
+        new_filename = hashlib.sha1((filename + str(datetime.datetime.now().timestamp())).encode()).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
         file.save(os.path.join(SONGS_DIRECTORY, newFileName))
-        audioFileMetadata = audio_metadata.load(SONGS_DIRECTORY + "/" + newFileName)
+        audio_file_metadata = audio_metadata.load(SONGS_DIRECTORY + "/" + new_filename)
         return { 
-            "name": newFileName,
-            "duration": strftime("%M:%S", gmtime(audioFileMetadata.streaminfo.duration))
+            "name": new_filename,
+            "duration": strftime("%M:%S", gmtime(audio_file_metadata.streaminfo.duration))
         }
 
-    def uploadSongThread(self, filename):
+    def upload_song_thread(self, filename):
         session_factory = sessionmaker(bind=create_engine(SQLALCHEMY_DATABASE_URI))
         Session = scoped_session(session_factory)
         song = Session.query(Song).filter_by(song_location=filename).first()
         while not song:
             song = Session.query(Song).filter_by(song_location=filename).first()
         client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
-        uploadResponse = json.loads(client.upload(SONGS_DIRECTORY + "/" + filename, filename))
+        upload_response = json.loads(client.upload(SONGS_DIRECTORY + "/" + filename, filename))
         os.remove(SONGS_DIRECTORY + "/" + filename)
         if song:
-            song.song_location = uploadResponse["name"]
+            song.song_location = upload_response["name"]
             song.status = "ready"
             Session.commit()
         Session.remove()

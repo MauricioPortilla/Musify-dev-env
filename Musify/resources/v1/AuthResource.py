@@ -26,29 +26,22 @@ def auth_token(function):
     return decorated
 
 class AuthResource(Resource):
-    def loginWithGoogle(self, json_data):
-        google_response = urllib.request.urlopen(
-            "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
-        ).read()
+    def login_with_google(self, json_data):
+        google_response = urllib.request.urlopen("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]).read()
         google_response_json = json.loads(google_response.decode("UTF-8"))
         account = Account.query.filter_by(email=google_response_json["email"]).first()
         if not account:
             return { "status": "failed", 'message': 'Account does not exist' }, 412
-        accessToken = jwt.encode({
+        access_token = jwt.encode({
             "account_id": account.account_id, 
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
         }, config.SECRET_KEY)
-        
-        return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+        return { "status": "success", "data": account_schema.dump(account).data, "access_token": access_token.decode("UTF-8") }, 200
     
-    def registerWithGoogle(self, json_data):
-        google_response = urllib.request.urlopen(
-            "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]
-        ).read()
+    def register_with_google(self, json_data):
+        google_response = urllib.request.urlopen("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + json_data["access_token"]).read()
         google_response_json = json.loads(google_response.decode("UTF-8"))
-        google_profile_response_json = json.loads(urllib.request.urlopen(
-            "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + json_data["access_token"]
-        ).read().decode('utf-8').replace('\n', ''))
+        google_profile_response_json = json.loads(urllib.request.urlopen("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + json_data["access_token"]).read().decode('utf-8').replace('\n', ''))
         account = Account.query.filter_by(email=google_response_json['email']).first()
         if account:
             return { "status": "failed", 'message': 'Account already exists' }, 409
@@ -78,23 +71,21 @@ class AuthResource(Resource):
             return { "status": "failed", "message": "No input data provided." }, 400
         if request_type == "login":
             if method and method == "google":
-                return self.loginWithGoogle(json_data)
-
+                return self.login_with_google(json_data)
             account = Account.query.filter_by(
                 email=json_data["email"], 
                 password=hashlib.sha512(json_data["password"].encode()).hexdigest()
             ).first()
             if not account:
                 return { "status": "failed", 'message': 'Account does not exist' }, 422
-            accessToken = jwt.encode({
+            access_token = jwt.encode({
                 "account_id": account.account_id, 
                 "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
             }, config.SECRET_KEY)
-            
-            return { "status": "success", "data": account_schema.dump(account).data, "access_token": accessToken.decode("UTF-8") }, 200
+            return { "status": "success", "data": account_schema.dump(account).data, "access_token": access_token.decode("UTF-8") }, 200
         elif request_type == "register":
             if method and method == "google":
-                return self.registerWithGoogle(json_data)
+                return self.register_with_google(json_data)
             data, errors = account_schema.load(json_data)
             if errors:
                 return errors, 422

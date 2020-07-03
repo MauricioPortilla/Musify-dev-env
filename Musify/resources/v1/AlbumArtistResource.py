@@ -10,8 +10,8 @@ artist_schema = ArtistSchema()
 class AlbumArtistResource(Resource):
     @auth_token
     def get(self, account, album_id):
-        albumArtists = AlbumArtist.query.filter_by(album_id=album_id)
+        album_artists = AlbumArtist.query.filter_by(album_id=album_id)
         artists = []
-        for artist in albumArtists:
+        for artist in album_artists:
             artists.append(Artist.query.filter_by(artist_id=artist.artist_id).first())
         return { "status": "success", "data": artists_schema.dump(artists).data }, 200

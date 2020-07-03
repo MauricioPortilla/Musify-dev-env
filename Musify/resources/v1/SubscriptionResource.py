@@ -10,18 +10,14 @@ subscription_schema = SubscriptionSchema()
 class SubscriptionResource(Resource):
     @auth_token
     def get(self, account):
-        subscription = Subscription.query.filter(
-            Subscription.account_id==account.account_id, Subscription.end_date > datetime.datetime.now()
-        ).first()
+        subscription = Subscription.query.filter(Subscription.account_id==account.account_id, Subscription.end_date > datetime.datetime.now()).first()
         if not subscription:
             return { "status": "failed", "message": "This account does not have an active subscription." }, 422
         return { "status": "success", "data": subscription_schema.dump(subscription).data }, 200
 
     @auth_token
     def post(self, account):
-        subscription = Subscription.query.filter(
-            Subscription.account_id==account.account_id, Subscription.end_date > datetime.datetime.now()
-        ).first()
+        subscription = Subscription.query.filter(Subscription.account_id==account.account_id, Subscription.end_date > datetime.datetime.now()).first()
         if subscription:
             return { "status": "failed", "message": "This account already have an active subscription." }, 409
         subscription = Subscription(

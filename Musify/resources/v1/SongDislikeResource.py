@@ -4,16 +4,16 @@ from flask import request
 from resources.v1.AuthResource import auth_token
 import json
 
-songdislikes_schema = SongDislikeSchema(many=True)
-songdislike_schema = SongDislikeSchema()
+song_dislikes_schema = SongDislikeSchema(many=True)
+song_dislike_schema = SongDislikeSchema()
 
 class SongDislikeResource(Resource):
     @auth_token
     def get(self, account, song_id):
-        songDislike = SongDislike.query.filter_by(account_id=account.account_id, song_id=song_id).first()
-        if not songDislike:
+        song_dislike = SongDislike.query.filter_by(account_id=account.account_id, song_id=song_id).first()
+        if not song_dislike:
             return { "status": "failed", "message": "No rate submitted to this song." }, 422
-        return { "status": "success", "data": songdislike_schema.dump(songDislike).data }, 200
+        return { "status": "success", "data": song_dislike_schema.dump(song_dislike).data }, 200
     
     @auth_token
     def post(self, account, song_id):
@@ -25,14 +25,14 @@ class SongDislikeResource(Resource):
         song = Song.query.filter_by(song_id=song_id).first()
         if not song:
             return { "status": "failed", "message": "This song does not exist." }, 422
-        songLike = SongLike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
-        songDislike = SongDislike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
-        if songLike or songDislike:
+        song_like = SongLike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
+        song_dislike = SongDislike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
+        if song_like or song_dislike:
             return { "status": "failed", "message": "A rate was already submitted." }, 401
-        songDislike = SongDislike(json_data["account_id"], song.song_id)
-        database.session.add(songDislike)
+        song_dislike = SongDislike(json_data["account_id"], song.song_id)
+        database.session.add(song_dislike)
         database.session.commit()
-        result = songdislike_schema.dump(songDislike).data
+        result = song_dislike_schema.dump(song_dislike).data
         return { "status": "success", "data": result }, 201
 
     @auth_token
@@ -45,9 +45,9 @@ class SongDislikeResource(Resource):
         song = Song.query.filter_by(song_id=song_id).first()
         if not song:
             return { "status": "failed", "message": "This song does not exist." }, 422
-        songDislike = SongDislike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
-        if not songDislike:
+        song_dislike = SongDislike.query.filter_by(song_id=song_id, account_id=account.account_id).first()
+        if not song_dislike:
             return { "status": "failed", "message": "No rate submitted to this song." }, 422
-        database.session.delete(songDislike)
+        database.session.delete(song_dislike)
         database.session.commit()
         return { "status": "success", "message": "Song rate deleted." }, 200

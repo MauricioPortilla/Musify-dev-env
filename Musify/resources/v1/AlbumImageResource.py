@@ -20,23 +20,21 @@ class AlbumImageResource(Resource):
     @auth_token
     def get(self, account, album_id):
         album = Album.query.filter_by(album_id=album_id).first()
-        fullpath = os.path.join(ALBUM_IMAGES_DIRECTORY, album.image_location)
-        resp = make_response(open(fullpath, 'rb').read())
+        full_path = os.path.join(ALBUM_IMAGES_DIRECTORY, album.image_location)
+        resp = make_response(open(full_path, 'rb').read())
         resp.content_type = "image/png"
         return resp
 
     @auth_token
     def post(self, account):
     	results = []
-    	for fileData in request.files:
+    	for file_data in request.files:
     		file = request.files[fileData]
     		if file and allowed_file(file.filename):
     			filename = secure_filename(file.filename).replace("_", " ")
-    			newFileName = hashlib.sha1(
-    				(filename + str(datetime.datetime.now().timestamp())).encode()
-    			).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
-    			file.save(os.path.join(ALBUM_IMAGES_DIRECTORY, newFileName))
-    			response = json.loads(json.dumps({"image_location": newFileName}))
+    			new_filename = hashlib.sha1((filename + str(datetime.datetime.now().timestamp())).encode()).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
+    			file.save(os.path.join(ALBUM_IMAGES_DIRECTORY, new_filename))
+    			response = json.loads(json.dumps({"image_location": new_filename}))
     			results.append(response);
     	if not results:
     		return { "status": "failed", "message": "No selected files." }, 400

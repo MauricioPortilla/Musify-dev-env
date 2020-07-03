@@ -17,17 +17,17 @@ class PlaylistSongResource(Resource):
             return { "status": "failed", "message": "Unauthorized." }, 401
 
         if (song_id is None):
-            playlistSongs = PlaylistSong.query.filter_by(playlist_id=playlist_id)
+            playlist_songs = PlaylistSong.query.filter_by(playlist_id=playlist_id)
             songs = []
-            for playlistSong in playlistSongs:
-                song = Song.query.filter_by(song_id=playlistSong.song_id, status="ready").first()
+            for playlist_song in playlist_songs:
+                song = Song.query.filter_by(song_id=playlist_song.song_id, status="ready").first()
                 songs.append(song)
             return { "status": "success", "data": songs_schema.dump(songs).data }
         else:
-            playlistSong = PlaylistSong.query.filter_by(playlist_id=playlist_id, song_id=song_id).first()
-            if (not playlistSong):
+            playlist_song = PlaylistSong.query.filter_by(playlist_id=playlist_id, song_id=song_id).first()
+            if not playlist_song:
                 return { "status": "failed", "message": "Playlist does not have this song." }, 422
-            song = Song.query.filter_by(song_id=playlistSong.song_id, status="ready").first()
+            song = Song.query.filter_by(song_id=playlist_song.song_id, status="ready").first()
             return { "status": "success", "data": song_schema.dump(song).data }
             
     @auth_token
@@ -42,10 +42,10 @@ class PlaylistSongResource(Resource):
             return { "status": "failed", "message": "Unauthorized." }, 401
         if (PlaylistSong.query.filter_by(playlist_id=playlist_id, song_id=json_data["song_id"]).first()):
             return { "status": "failed", "message": "Playlist already has this song." }, 409
-        playlistSong = PlaylistSong(playlist_id=playlist_id, song_id=json_data["song_id"])
-        database.session.add(playlistSong)
+        playlist_song = PlaylistSong(playlist_id=playlist_id, song_id=json_data["song_id"])
+        database.session.add(playlist_song)
         database.session.commit()
-        result = playlist_song_schema.dump(playlistSong).data
+        result = playlist_song_schema.dump(playlist_song).data
         return { "status": "success", "data": result }, 201
 
     @auth_token

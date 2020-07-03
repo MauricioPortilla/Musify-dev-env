@@ -19,9 +19,9 @@ class SongStreamResource(Resource):
             return { "status": "failed", "message": "This song does not exist." }, 422
         if song.status != "ready":
             return { "status": "failed", "message": "This song is not ready yet." }, 401
-        def generateData(song, quality_type):
+        def generate_data(song, quality_type):
             client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
             response = client.download(song.song_location, quality_type)
             for chunk in response:
                 yield chunk.buffer
-        return Response(generateData(song, quality_type), mimetype="audio/mp3")
+        return Response(generate_data(song, quality_type), mimetype="audio/mp3")

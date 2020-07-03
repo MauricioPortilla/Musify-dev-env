@@ -10,19 +10,19 @@ import sys
 class AccountSongStreamResource(Resource):
     @auth_token
     def get(self, account, account_song_id):
-        accountSong = AccountSong.query.filter_by(account_song_id=account_song_id).first()
-        if not accountSong:
+        account_song = AccountSong.query.filter_by(account_song_id=account_song_id).first()
+        if not account_song:
             return { "status": "failed", "message": "This account song does not exist." }, 422
-        if account.account_id != accountSong.account_id:
+        if account.account_id != account_song.account_id:
             return { "status": "failed", "message": "Unauthorized." }, 401
         headers = Headers()
-        def generateData(accountSong, headers):
-            totalBytes = 0
-            with open(ACCOUNT_SONGS_DIRECTORY + "/" + accountSong.song_location, 'rb') as songStream:
-                data = songStream.read(1024)
+        def generate_data(accountSong, headers):
+            total_bytes = 0
+            with open(ACCOUNT_SONGS_DIRECTORY + "/" + account_song.song_location, 'rb') as song_stream:
+                data = song_stream.read(1024)
                 while data:
                     yield data
-                    data = songStream.read(1024)
-                    totalBytes += 1024
-                headers.add("Content-Range", "bytes */" + str(totalBytes))
-        return Response(generateData(accountSong, headers), mimetype="audio/x-wav", headers=headers)
+                    data = song_stream.read(1024)
+                    total_bytes += 1024
+                headers.add("Content-Range", "bytes */" + str(total_bytes))
+        return Response(generate_data(account_song, headers), mimetype="audio/x-wav", headers=headers)
