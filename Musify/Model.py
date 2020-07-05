@@ -82,7 +82,7 @@ class Playlist(database.Model):
     playlist_id = database.Column(database.Integer, primary_key=True)
     account_id = database.Column(database.Integer, database.ForeignKey("account.account_id"), nullable=False)
     account = database.relationship("Account", backref=database.backref("account_playlist", lazy="dynamic"))
-    name = database.Column(database.String(20), nullable=False)
+    name = database.Column(database.String(50), nullable=False)
 
     def __init__(self, account_id, name):
         self.account_id = account_id

@@ -29,7 +29,7 @@ class AlbumImageResource(Resource):
     def post(self, account):
     	results = []
     	for file_data in request.files:
-    		file = request.files[fileData]
+    		file = request.files[file_data]
     		if file and allowed_file(file.filename):
     			filename = secure_filename(file.filename).replace("_", " ")
     			new_filename = hashlib.sha1((filename + str(datetime.datetime.now().timestamp())).encode()).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()

@@ -41,7 +41,7 @@ class AlbumSongResource(Resource):
     def store_song_file(self, file):
         filename = secure_filename(file.filename).replace("_", " ")
         new_filename = hashlib.sha1((filename + str(datetime.datetime.now().timestamp())).encode()).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
-        file.save(os.path.join(SONGS_DIRECTORY, newFileName))
+        file.save(os.path.join(SONGS_DIRECTORY, new_filename))
         audio_file_metadata = audio_metadata.load(SONGS_DIRECTORY + "/" + new_filename)
         return { 
             "name": new_filename,

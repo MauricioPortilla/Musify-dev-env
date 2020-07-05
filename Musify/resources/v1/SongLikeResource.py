@@ -30,7 +30,7 @@ class SongLikeResource(Resource):
         if song_like or song_dislike:
             return { "status": "failed", "message": "A rate was already submitted." }, 401
         song_like = SongLike(json_data["account_id"], song.song_id)
-        database.session.add(songLike)
+        database.session.add(song_like)
         database.session.commit()
         result = song_like_schema.dump(song_like).data
         return { "status": "success", "data": result }, 201
