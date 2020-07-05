@@ -1,0 +1,20 @@
+name: Musify-dev-env CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create docker network
+      run: docker network create --driver bridge --subnet 172.250.6.0/24 musify_network
+    - name: Build the docker-compose
+      run: docker-compose build
+    - name: Up the docker-compose as daemon
+      run: docker-compose up -d
+    - name: Check running containers
+      run: docker ps -a
