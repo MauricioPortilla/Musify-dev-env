@@ -3,7 +3,8 @@ from Model import database, Song, SongSchema
 from flask import request
 from config import APP_ROOT, ALLOWED_FILE_SONG_EXTENSIONS, SONGS_DIRECTORY, MUSIFY_GRPC_SERVER_ADDRESS, SQLALCHEMY_DATABASE_URI
 from werkzeug.utils import secure_filename
-from resources.v1.AuthResource import auth_token
+from .AuthResource import auth_token
+from .lang.lang import get_request_message
 from time import strftime, gmtime
 import datetime, sys, os, hashlib, audio_metadata, json, threading
 sys.path.insert(1, APP_ROOT + '/grpc/src')
@@ -15,7 +16,7 @@ from sqlalchemy import create_engine
 songs_schema = SongSchema(many=True)
 song_schema = SongSchema()
 
-def allowed_file(filename):
+def is_allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_FILE_SONG_EXTENSIONS
 
@@ -30,17 +31,19 @@ class AlbumSongResource(Resource):
         results = []
         for file_data in request.files:
             file = request.files[file_data]
-            if file and allowed_file(file.filename):
+            if file and is_allowed_file(file.filename):
                 stored_song = self.store_song_file(file)
                 threading.Thread(target=self.upload_song_thread, args=(stored_song["name"],)).start()
                 results.append(stored_song);
         if not results:
-            return { "status": "failed", "message": "No selected files." }, 400
+            return { "status": "failed", "message": get_request_message(request, "NO_FILES_SELECTED") }, 400
         return { "status": "success", "data": results }, 201
 
     def store_song_file(self, file):
         filename = secure_filename(file.filename).replace("_", " ")
-        new_filename = hashlib.sha1((filename + str(datetime.datetime.now().timestamp())).encode()).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
+        new_filename = hashlib.sha1(
+            (filename + str(datetime.datetime.now().timestamp())).encode()
+        ).hexdigest() + "." + file.filename.rsplit('.', 1)[1].lower()
         file.save(os.path.join(SONGS_DIRECTORY, new_filename))
         audio_file_metadata = audio_metadata.load(SONGS_DIRECTORY + "/" + new_filename)
         return { 

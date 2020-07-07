@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from Model import database, Artist, ArtistSchema
-from resources.v1.AuthResource import auth_token
+from .AuthResource import auth_token
 
 artists_schema = ArtistSchema(many=True)
 

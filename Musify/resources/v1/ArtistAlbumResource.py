@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from Model import database, Album, AlbumSchema, AlbumArtist, AlbumArtistSchema
 from flask import request
-from resources.v1.AuthResource import auth_token
+from .AuthResource import auth_token
 import json
 
 albums_schema = AlbumSchema(many=True)

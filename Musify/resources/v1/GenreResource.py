@@ -1,7 +1,8 @@
 from flask_restful import Resource
 from Model import database, Genre, GenreSchema
 from flask import request
-from resources.v1.AuthResource import auth_token
+from .AuthResource import auth_token
+from .lang.lang import get_request_message
 import json
 
 genres_schema = GenreSchema(many=True)
@@ -16,5 +17,5 @@ class GenreResource(Resource):
     	else:
         	genre = Genre.query.filter_by(genre_id=genre_id).first()
         	if not genre:
-        		return { "status": "failed", "message": "This genre does not exist." }, 422
+        		return { "status": "failed", "message": get_request_message(request, "NON_EXISTENT_GENRE") }, 422
         	return { "status": "success", "data": genre_schema.dump(genre).data }, 200

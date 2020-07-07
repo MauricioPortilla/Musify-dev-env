@@ -2,10 +2,9 @@ from flask_restful import Resource
 from flask import request, Response
 from config import MUSIFY_GRPC_SERVER_ADDRESS
 from Model import Song, SongSchema
-from resources.v1.AuthResource import auth_token
-import json
-import subprocess
-import sys
+from .AuthResource import auth_token
+from .lang.lang import get_request_message
+import json, subprocess, sys
 sys.path.insert(1, '/home/vagrant/Musify/grpc/src')
 import musify_client
 
@@ -16,9 +15,9 @@ class SongStreamResource(Resource):
     def get(self, account, song_id, quality_type):
         song = Song.query.filter_by(song_id=song_id).first()
         if not song:
-            return { "status": "failed", "message": "This song does not exist." }, 422
+            return { "status": "failed", "message": get_request_message(request, "NON_EXISTENT_SONG") }, 422
         if song.status != "ready":
-            return { "status": "failed", "message": "This song is not ready yet." }, 401
+            return { "status": "failed", "message": get_request_message(request, "SONG_NOT_READY_YET") }, 401
         def generate_data(song, quality_type):
             client = musify_client.MusifyClient(MUSIFY_GRPC_SERVER_ADDRESS)
             response = client.download(song.song_location, quality_type)

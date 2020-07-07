@@ -3,7 +3,8 @@ from werkzeug.datastructures import Headers
 from flask import request, Response
 from config import ACCOUNT_SONGS_DIRECTORY
 from Model import AccountSong
-from resources.v1.AuthResource import auth_token
+from .AuthResource import auth_token
+from .lang.lang import get_request_message
 import subprocess
 import sys
 
@@ -12,9 +13,9 @@ class AccountSongStreamResource(Resource):
     def get(self, account, account_song_id):
         account_song = AccountSong.query.filter_by(account_song_id=account_song_id).first()
         if not account_song:
-            return { "status": "failed", "message": "This account song does not exist." }, 422
+            return { "status": "failed", "message": get_request_message(request, "NON_EXISTENT_ACCOUNT_SONG") }, 422
         if account.account_id != account_song.account_id:
-            return { "status": "failed", "message": "Unauthorized." }, 401
+            return { "status": "failed", "message": get_request_message(request, "UNAUTHORIZED") }, 401
         headers = Headers()
         def generate_data(accountSong, headers):
             total_bytes = 0
