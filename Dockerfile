@@ -9,6 +9,7 @@ RUN ["/bin/bash", "-c", "apt-get install -y libpq-dev > /dev/null 2>&1"]
 RUN mkdir /Musify
 RUN mkdir /Musify/Musify
 RUN mkdir /Musify/MusifyVenv
+COPY ./Musify /Musify/Musify
 WORKDIR /Musify/MusifyVenv
 RUN ["/bin/bash", "-c", "python3 -m venv venv > /dev/null 2>&1"]
 RUN ["/bin/bash", "-c", "source venv/bin/activate; python -m pip install grpcio > /dev/null 2>&1"]
